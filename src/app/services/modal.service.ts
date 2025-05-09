@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
 
+interface IModal {
+   id: string;
+   visible: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -8,18 +13,38 @@ import { Injectable } from '@angular/core';
 //for the module we have to add the service to the providers array in the module
 //for the component we have to add the service to the providers array in the component (now only this component can use the service)
 //but the root is the most common way to inject a service
+
 export class ModalService {
+
+   constructor() { }
+
    private visible = false;
 
-   isModalVisible() {
-     return this.visible;
+   private modals: IModal[] = [];
+
+   //register the modal
+   registerModal(modalId: string) {
+       this.modals.push({
+          id: modalId,
+          visible: false
+       });
+       console.log(this.modals);
    }
 
-   toggleModal() {
-     this.visible = !this.visible;
+   unRegisterModal(modalId: string) { 
+      this.modals = this.modals.filter(element => element.id !== modalId);// i am letting the element to be in the array if the id is not equal to the modalId
    }
 
-  constructor() { }
+   isModalVisible(id: string) : boolean {
+     return !!this.modals.find(element => element.id === id)?.visible;
+   }
+
+   toggleModal(id: string) {
+      const modal = this.modals.find(element => element.id === id);
+      if(modal){
+         modal.visible = !modal.visible;
+      }
+   }
 }
 
 //this service is used to open and close the modal
