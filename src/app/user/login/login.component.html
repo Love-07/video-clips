@@ -8,8 +8,11 @@
    <div class="mb-3">
       <app-input [control]="password" label="Password" type="password" placeholder="Enter Password"></app-input>
    </div>
-   <button type="submit" class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
-      hover:bg-indigo-500">
+   <button [disabled]="!loginForm.valid" type="submit" class="block w-full text-white py-1.5 px-3 rounded transition"
+      [ngClass]="{
+      'bg-indigo-400 hover:bg-indigo-500': loginForm.valid,
+      'bg-indigo-300 cursor-not-allowed': !loginForm.valid
+      }">
       Submit
    </button>
 </form>

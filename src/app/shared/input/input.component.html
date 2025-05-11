@@ -7,7 +7,7 @@
   [mask]="format"
   [dropSpecialCharacters]="false"
 />
-<ng-container>
+<ng-container *ngIf="control.dirty || control.touched">
    <p *ngIf="control.errors?.['required']" class="text-red-400">
       {{ label }} is required
    </p>
