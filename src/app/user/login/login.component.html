@@ -1,0 +1,15 @@
+<!-- Login Form -->
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+   <!-- Email -->
+   <div class="mb-3">
+      <app-input [control]="email" label="Email" type="email" placeholder="Enter Email"></app-input>
+   </div>
+   <!-- Password -->
+   <div class="mb-3">
+      <app-input [control]="password" label="Password" type="password" placeholder="Enter Password"></app-input>
+   </div>
+   <button type="submit" class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
+      hover:bg-indigo-500">
+      Submit
+   </button>
+</form>

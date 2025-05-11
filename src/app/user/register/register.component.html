@@ -1,0 +1,31 @@
+<!-- Registration Form -->
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+   <!-- Name -->
+   <div class="mb-3">
+      <app-input [control]="name" label="Name" placeholder="Enter Name"></app-input>
+   </div>
+   <!-- Email -->
+   <div class="mb-3">
+      <app-input [control]="email" label="Email" type="email" placeholder="Enter Email"></app-input>
+   </div>
+   <!-- Age -->
+   <div class="mb-3">
+      <app-input [control]="age" label="Age" type="number" placeholder="Enter Age"></app-input>
+   </div>
+   <!-- Password -->
+   <div class="mb-3">
+      <app-input [control]="password" label="Password" type="password" placeholder="Enter Password"></app-input>
+   </div>
+   <!-- Confirm Password -->
+   <div class="mb-3">
+      <app-input [control]="confirmPassword" label="Confirm Password" type="password" placeholder="Enter Confirm Password"></app-input>
+   </div>
+   <!-- Phone Number -->
+   <div class="mb-3">
+      <app-input [control]="phoneNumber" label="Phone Number" placeholder="Enter Phone Number" format="9999 999 999"></app-input>
+   </div>
+   <button type="submit" class="block w-full bg-indigo-400 text-white py-1.5 px-3 rounded transition
+      hover:bg-indigo-500">
+      Submit
+   </button>
+</form>
