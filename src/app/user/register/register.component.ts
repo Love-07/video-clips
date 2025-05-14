@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegisterValidators } from '../validators/register-validators';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Component({
   selector: 'app-register',
@@ -9,12 +10,12 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
-   alertMssg = '';
+   alertMssg = 'Your Request is being processed, we will be registering you soon..';
    alertColor = 'blue';
    showAlert = false;
-   isRequestProcessing = false;
+   isRequestProcessing = false; //if the network is slow, then this will not let the user to submit the form multiple times
 
-   constructor(private auth: AngularFireAuth) {
+   constructor(private auth: AngularFireAuth, private firestore: AngularFirestore) {
    }
 
    name = new FormControl('', [Validators.required, Validators.minLength(3)]);
@@ -37,6 +38,7 @@ export class RegisterComponent {
 
    async onSubmit() {
       this.isRequestProcessing = true;
+      this.showAlert = true;
       const {email, password} = this.registerForm.value;
       await this.auth.createUserWithEmailAndPassword(email as string, password as string)
          .then((userCredential) => {
@@ -46,6 +48,12 @@ export class RegisterComponent {
             this.alertColor = 'green';
             this.showAlert = true;
             console.log('userCred',user);
+            this.firestore.collection('users').add({
+               name: this.name.value,
+               email: this.email.value,
+               age: this.age.value,
+               phoneNumber: this.phoneNumber.value,
+            })
          }
          ).catch((error) => {
             this.isRequestProcessing = false;

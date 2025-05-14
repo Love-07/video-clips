@@ -9,6 +9,7 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { environment } from 'src/environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     UserModule,
     NgxMaskDirective,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFirestoreModule,
   ],
   providers: [provideNgxMask()],
   bootstrap: [AppComponent]
