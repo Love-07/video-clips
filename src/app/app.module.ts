@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { UserModule } from './user/user.module';
 import { NavComponent } from './nav/nav.component';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { environment } from 'src/environments/environment';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,9 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     BrowserModule,
     AppRoutingModule,
     UserModule,
-    NgxMaskDirective
+    NgxMaskDirective,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule
   ],
   providers: [provideNgxMask()],
   bootstrap: [AppComponent]

@@ -26,7 +26,8 @@ import { NgxMaskDirective } from 'ngx-mask';
     ModalComponent,
     TabContainerComponent,
     TabComponent,
-    InputComponent
+    InputComponent,
+    AlertComponent
   ],
 })
 export class SharedModule { }
