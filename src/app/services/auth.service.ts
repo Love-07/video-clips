@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import IUser from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private auth: AngularFireAuth, private firestore: AngularFirestore) { }
+   private userCollection: AngularFirestoreCollection<IUser>;
+
+   constructor(private auth: AngularFireAuth, private firestore: AngularFirestore) {
+      this.userCollection = this.firestore.collection('users');
+   }
 
   public async createUser(userData: any) {
    const {email,password,name,age,phoneNumber} = userData;
    await this.auth.createUserWithEmailAndPassword(email, password)
          .then((userCredential) => {
-            this.firestore.collection('users').add({
+            this.userCollection.add({
                name: name,
                email: email,
                age: age,
