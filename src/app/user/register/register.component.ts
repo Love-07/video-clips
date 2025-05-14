@@ -54,7 +54,6 @@ export class RegisterComponent {
          const errorMessage = (error as any).message;
          this.alertMssg = errorMessage;
          this.alertColor = 'red';
-         this.showAlert = true;
          console.log(errorCode);
          console.log(errorMessage);
          return;

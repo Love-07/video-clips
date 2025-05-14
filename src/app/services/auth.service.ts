@@ -18,12 +18,16 @@ export class AuthService {
    const {email,password,name,age,phoneNumber} = userData;
    await this.auth.createUserWithEmailAndPassword(email, password)
          .then((userCredential) => {
-            this.userCollection.add({
+            this.userCollection.doc(userCredential.user?.uid).set({
                name: name,
                email: email,
                age: age,
                phoneNumber: phoneNumber,
             })
+            userCredential.user?.updateProfile({
+               displayName: name,
+            })
+            console.log('userCredential!!!',userCredential)
          }
          ).catch((error) => {
             throw error;
