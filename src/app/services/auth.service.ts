@@ -14,10 +14,10 @@ export class AuthService {
    await this.auth.createUserWithEmailAndPassword(email, password)
          .then((userCredential) => {
             this.firestore.collection('users').add({
-               name: name.value,
-               email: email.value,
-               age: age.value,
-               phoneNumber: phoneNumber.value,
+               name: name,
+               email: email,
+               age: age,
+               phoneNumber: phoneNumber,
             })
          }
          ).catch((error) => {

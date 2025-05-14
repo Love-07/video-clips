@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RegisterValidators } from '../validators/register-validators';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AuthService } from '../../services/auth.service';
 import IUser from '../../models/user.model';
 
@@ -47,7 +45,6 @@ export class RegisterComponent {
       this.showAlert = true;
       const userData = this.registerForm.value;
 
-      
       try{
          await this.authService.createUser(userData as IUser);
       }
