@@ -8,9 +8,9 @@ import 'firebase/compat/auth';
 
 
 
-if(environment.production) {
-   enableProdMode();
- }
+// if(environment.production) {
+//    enableProdMode();
+//  }
 
  firbase.initializeApp(environment.firebase);
 
