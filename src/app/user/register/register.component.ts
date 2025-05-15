@@ -3,6 +3,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { RegisterValidators } from '../validators/register-validators';
 import { AuthService } from '../../services/auth.service';
 import IUser from '../../models/user.model';
+import { EmailTakenAsync } from '../validators/email-taken-async';
+
 
 @Component({
   selector: 'app-register',
@@ -15,11 +17,11 @@ export class RegisterComponent {
    showAlert = false;
    isRequestProcessing = false; //if the network is slow, then this will not let the user to submit the form multiple times
 
-   constructor(private authService: AuthService) {
+   constructor(private authService: AuthService, private emailTakenService: EmailTakenAsync) {
    }
 
    name = new FormControl('', [Validators.required, Validators.minLength(3)]);
-   email = new FormControl('', [Validators.required, Validators.email]);
+   email = new FormControl('', [Validators.required, Validators.email], [this.emailTakenService.validate]);
    age = new FormControl<number | null>(null, [Validators.required]); // the type of the form control can be configure using generic type
    password = new FormControl('', [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm),]);
    confirmPassword = new FormControl('', [Validators.required]);
