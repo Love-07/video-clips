@@ -1,3 +1,7 @@
+<!-- Alert Notification -->
+ <app-alert *ngIf="showAlert" [color]="alertColor">
+   {{alertMssg}}
+ </app-alert>
 <!-- Login Form -->
 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
    <!-- Email -->
@@ -8,7 +12,7 @@
    <div class="mb-3">
       <app-input [control]="password" label="Password" type="password" placeholder="Enter Password"></app-input>
    </div>
-   <button [disabled]="!loginForm.valid" type="submit" class="block w-full text-white py-1.5 px-3 rounded transition"
+   <button [disabled]="!loginForm.valid || isRequestProcessing" type="submit" class="block w-full text-white py-1.5 px-3 rounded transition"
       [ngClass]="{
       'bg-indigo-400 hover:bg-indigo-500': loginForm.valid,
       'bg-indigo-300 cursor-not-allowed': !loginForm.valid
