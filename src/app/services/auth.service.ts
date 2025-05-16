@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 import IUser from '../models/user.model';
-import { delay, map, Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { delay, filter, map, Observable, of, switchMap, tap } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,9 @@ export class AuthService {
    private userCollection: AngularFirestoreCollection<IUser>;
    public isAuthenticated$ : Observable<boolean>;
    public isAuthenticatedWithDelay$ : Observable<boolean>;
+   redirect = false;
 
-   constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, private router: Router) {
+   constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) {
       this.userCollection = this.firestore.collection('users');
       this.isAuthenticated$ = auth.user.pipe(
          map((user) => !!user)
@@ -22,6 +23,15 @@ export class AuthService {
       this.isAuthenticatedWithDelay$ = this.isAuthenticated$.pipe(
          delay(2000) // delay the authentication check by 2 second
       )
+
+      this.router.events.pipe(
+         filter(e => e instanceof NavigationEnd),
+         map(() => this.route.firstChild),
+         switchMap((route) => route?.data as Observable<{ authOnly?: boolean }> ?? of({}))
+      ).subscribe((data: { authOnly?: boolean }) => {
+         this.redirect = data?.authOnly ?? false;
+      });//by filter we will be listening to specific events from the router
+         //switch map is used to subscribe the inner observable
       
    }
 
@@ -50,7 +60,9 @@ export class AuthService {
          e.preventDefault();
       } 
       await this.auth.signOut();
-      await this.router.navigateByUrl('/');
+      if(this.redirect){
+         await this.router.navigateByUrl('/'); // if suppose i am logging out from a route which doesn't need authentication then in that case i will not redirect to the home page
+      }
    }
 }
 // Rather than teaching the component how to use the angularfire library services, we will create a centralized logic and inject into components for creating a user 
