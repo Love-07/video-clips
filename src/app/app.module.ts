@@ -14,6 +14,7 @@ import { HomeComponent } from './home/home.component';
 import { AboutComponent } from './about/about.component';
 import { VideoModule } from './video/video.module';
 import { ClipsComponent } from './clips/clips.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -21,17 +22,18 @@ import { ClipsComponent } from './clips/clips.component';
     NavComponent,
     HomeComponent,
     AboutComponent,
-    ClipsComponent
+    ClipsComponent,
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    VideoModule,
     UserModule,
     NgxMaskDirective,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    VideoModule
+    AppRoutingModule
   ],
   providers: [provideNgxMask()],
   bootstrap: [AppComponent]
