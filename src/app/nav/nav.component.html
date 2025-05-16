@@ -13,7 +13,7 @@
          </li>
          <ng-template #authLinks>
             <li>
-               <a routerLinkActive="text-indigo-400" class="px-2" routerLink="/manage">Manage</a>
+               <a routerLinkActive="text-indigo-400" class="px-2" routerLink="/manage" [queryParams]="{sort: 1}">Manage</a>
             </li>
             <li>
                <a routerLinkActive="text-indigo-400" class="px-2" routerLink="/upload">Upload</a>

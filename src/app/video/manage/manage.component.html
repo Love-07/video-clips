@@ -4,10 +4,23 @@
       <a routerLink="/upload" class="bg-indigo-400 text-white py-4 px-10 text-xl">Upload Videos</a>
       
       <!-- Sort Videos -->
-      <select class="text-black px-8 text-xl outline-none appearance-none">
+      <select class="text-black px-8 text-xl outline-none appearance-none" [value]="videoOrder" (change)="sort($event)">
+        <option value="1" [selected]="videoOrder === '1'">Recent Uploads</option>
+        <option value="2" [selected]=" videoOrder === '2'">Oldest Uploads</option>
+      </select>
+
+      <!-- This will also work -->
+      <!-- <select class="text-black px-8 text-xl outline-none appearance-none" [value]="videoOrder" (change)="sort($event)">
         <option value="1">Recent Uploads</option>
         <option value="2">Oldest Uploads</option>
-      </select>
+      </select> -->
+
+
+      <!-- This is an over kill as for this i need to import forms module in this module too -->
+      <!-- <select [(ngModel)]="videoOrder" class="text-black px-8 text-xl outline-none appearance-none" (change)="sort($event)">
+        <option value="1">Recent Uploads</option>
+        <option value="2">Oldest Uploads</option>
+      </select> -->
     </div>
   </section>
 
