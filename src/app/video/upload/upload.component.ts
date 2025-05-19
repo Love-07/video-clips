@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { last, map, Observable, switchMap } from 'rxjs';
+import { last, map, Observable, switchMap, timestamp } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuid } from 'uuid';
 import firebase from 'firebase/compat/app'
@@ -92,7 +92,8 @@ export class UploadComponent implements OnInit, OnDestroy {
                displayName: this.user?.displayName as string,
                title: this.title.value,
                fileName: `${clipName}.mp4`,
-               url
+               url,
+               timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }
             const clipDocRef = await this.clipsService.createClips(clips)
             console.log('clipsss',clips);
