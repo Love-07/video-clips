@@ -3,14 +3,15 @@
     <div class="rounded relative flex flex-col">
       <div class="font-bold mb-6">Upload Video</div>
 
-      <!-- Upload Dropbox -->
-      <div app-event-blocker *ngIf="!isFileUploaded; else formContainer"
+      <ng-container *ngIf="!isFileUploaded; else formContainer" >
+         <!-- Upload Dropbox -->
+      <div app-event-blocker
          (dragover)="isDragging= true"
          (dragenter)="isDragging= true"
          (dragleave)="isDragging= false"
          (dragend)="isDragging= false"
          (mouseleave)="isDragging= false"
-         (drop)="onDrop($event)"
+         (drop)="storeFile($event)"
          [ngClass]="{
             'bg-indigo-400 border-indigo-400 border-solid': isDragging
          }"
@@ -19,6 +20,9 @@
           hover:bg-indigo-400 hover:border-indigo-400 hover:border-solid text-xl">
         <h5>Drop your file here (mp4 only!)</h5>
       </div>
+
+      <input type="file" class="mt-4" (change)="storeFile($event)">
+      </ng-container>
 
       <!-- Video Editor -->
       <ng-template #formContainer>

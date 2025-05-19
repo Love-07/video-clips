@@ -42,9 +42,9 @@ export class UploadComponent implements OnInit {
    ngOnInit(): void {
    }
 
-   onDrop(e:Event){ 
+   storeFile(e:Event){ 
       this.isDragging = false;
-      this.file = (e as DragEvent).dataTransfer?.files.item(0) ?? null //this function will handle the grabbing of the file which come over the event 
+      this.file = (e as DragEvent).dataTransfer ? (e as DragEvent).dataTransfer?.files.item(0) ?? null : (e.target as HTMLInputElement).files?.item(0) ?? null  //this function will handle the grabbing of the file which come over the event 
 
       if(!this.file || this.file.type != 'video/mp4'){
          return;
