@@ -56,6 +56,7 @@ export class UploadComponent implements OnInit {
    }
 
    uploadFile(){
+      this.uploadForm.disable();
       this.showAlert = true;
       this.alertColor = 'blue'
       this.alertMessage = "Please wait!! Your clip is being uploaded."
@@ -93,6 +94,7 @@ export class UploadComponent implements OnInit {
             console.log('clipsss',clips);
          },
          error: (err) =>{
+            this.uploadForm.enable()
             this.alertColor = 'red',
             this.alertMessage = 'Upload Failed!, Please try again later.'
             this.isRequestProcessing = false
