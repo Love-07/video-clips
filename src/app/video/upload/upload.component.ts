@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { last, map, switchMap } from 'rxjs';
+import { last, map, Observable, switchMap } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuid } from 'uuid';
 import firebase from 'firebase/compat/app'
@@ -12,7 +12,7 @@ import { ClipsService } from 'src/app/services/clips.service';
   templateUrl: './upload.component.html',
   styleUrls: ['./upload.component.css']
 })
-export class UploadComponent implements OnInit {
+export class UploadComponent implements OnInit, OnDestroy {
    isDragging = false;
    isFileUploaded = false;
    file : File | null = null;
@@ -23,6 +23,7 @@ export class UploadComponent implements OnInit {
    percentage = 0;
    showPercentage = false;
    user: firebase.User | null = null;
+   uploadTask?: AngularFireUploadTask;
    
    
 
@@ -38,6 +39,8 @@ export class UploadComponent implements OnInit {
          this.user = user
       })
    }
+   
+   
 
    ngOnInit(): void {
    }
@@ -65,17 +68,17 @@ export class UploadComponent implements OnInit {
 
       let clipName = uuid()
       const filePath = `clips/${clipName}.mp4`
-      const uploadTask = this.storage.upload(filePath,this.file);
+      this.uploadTask = this.storage.upload(filePath,this.file);
 
       const clipRef = this.storage.ref(filePath);
 
-      uploadTask.percentageChanges().pipe(map((progress) => {
+      this.uploadTask.percentageChanges().pipe(map((progress) => {
          return (progress as number) / 100;
       })).subscribe(percent => {
          this.percentage = percent;
       })
 
-      uploadTask.snapshotChanges().pipe(
+      this.uploadTask.snapshotChanges().pipe(
          last(),
          switchMap(() => clipRef.getDownloadURL())
       ).subscribe({
@@ -102,6 +105,10 @@ export class UploadComponent implements OnInit {
             console.log('Error:',err)
          }
       });
+   }
+
+   ngOnDestroy(): void {
+      this.uploadTask?.cancel();
    }
 
 }
