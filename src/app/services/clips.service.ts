@@ -12,7 +12,7 @@ export class ClipsService {
       this.clipsCollection = store.collection('clips')
    }
 
-   async createClips(clip :IClip){
-      await this.clipsCollection.add(clip);
+   createClips(clip :IClip){
+      return this.clipsCollection.add(clip);
    }
 }

@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuid } from 'uuid';
 import firebase from 'firebase/compat/app'
 import { ClipsService } from 'src/app/services/clips.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -33,7 +34,7 @@ export class UploadComponent implements OnInit, OnDestroy {
       title: this.title
    })
 
-   constructor(private storage: AngularFireStorage, private auth: AuthService, private clipsService: ClipsService){
+   constructor(private storage: AngularFireStorage, private auth: AuthService, private clipsService: ClipsService, private router: Router){
       //as soon as the component is initialized i want to get the user detail handy with me 
       this.auth.getUser$.subscribe((user)=>{
          this.user = user
@@ -82,7 +83,7 @@ export class UploadComponent implements OnInit, OnDestroy {
          last(),
          switchMap(() => clipRef.getDownloadURL())
       ).subscribe({
-         next: (url) =>{
+         next: async (url) =>{
             this.alertColor = 'green',
             this.alertMessage = 'Upload Sucessfull !!'
             this.showPercentage = false;
@@ -93,8 +94,12 @@ export class UploadComponent implements OnInit, OnDestroy {
                fileName: `${clipName}.mp4`,
                url
             }
-            this.clipsService.createClips(clips)
+            const clipDocRef = await this.clipsService.createClips(clips)
             console.log('clipsss',clips);
+            setTimeout(() => {
+               this.router.navigate(['clip',clipDocRef.id]);
+            }, 1000);
+            
          },
          error: (err) =>{
             this.uploadForm.enable()
