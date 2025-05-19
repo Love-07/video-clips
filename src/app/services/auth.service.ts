@@ -13,6 +13,7 @@ export class AuthService {
    private userCollection: AngularFirestoreCollection<IUser>;
    public isAuthenticated$ : Observable<boolean>;
    public isAuthenticatedWithDelay$ : Observable<boolean>;
+   public getUser$ : Observable<any>;
    redirect = false;
 
    constructor(private auth: AngularFireAuth, private firestore: AngularFirestore, private router: Router, private route: ActivatedRoute) {
@@ -23,6 +24,8 @@ export class AuthService {
       this.isAuthenticatedWithDelay$ = this.isAuthenticated$.pipe(
          delay(2000) // delay the authentication check by 2 second
       )
+
+      this.getUser$ = auth.user;
 
       this.router.events.pipe(
          filter(e => e instanceof NavigationEnd),
@@ -35,8 +38,11 @@ export class AuthService {
       
    }
 
-  public async createUser(userData: any) {
-   const {email,password,name,age,phoneNumber} = userData;
+  public async createUser(userData: IUser) {
+   const {email, password, name, age, phoneNumber} = userData;
+   if (!email || !password) {
+      throw new Error('Email and password are required to create a user.');
+   }
    await this.auth.createUserWithEmailAndPassword(email, password)
          .then((userCredential) => {
             this.userCollection.doc(userCredential.user?.uid).set({

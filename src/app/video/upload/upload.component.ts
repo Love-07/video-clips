@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { last, map, switchMap } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuid } from 'uuid';
+import firebase from 'firebase/compat/app'
 
 @Component({
   selector: 'app-upload',
@@ -12,6 +15,14 @@ export class UploadComponent implements OnInit {
    isDragging = false;
    isFileUploaded = false;
    file : File | null = null;
+   showAlert = false;
+   alertColor = 'blue'
+   alertMessage= "Please wait!! Your Clip is being uploaded."
+   isRequestProcessing = false;
+   percentage = 0;
+   showPercentage = false;
+   user: firebase.User | null = null;
+   
    
 
    title = new FormControl('', {validators: [Validators.required, Validators.minLength(3)], nonNullable:true});
@@ -20,8 +31,11 @@ export class UploadComponent implements OnInit {
       title: this.title
    })
 
-   constructor(private storage: AngularFireStorage){
-
+   constructor(private storage: AngularFireStorage, private auth: AuthService){
+      //as soon as the component is initialized i want to get the user detail handy with me 
+      this.auth.getUser$.subscribe((user)=>{
+         this.user = user
+      })
    }
 
    ngOnInit(): void {
@@ -41,12 +55,49 @@ export class UploadComponent implements OnInit {
    }
 
    uploadFile(){
+      this.showAlert = true;
+      this.alertColor = 'blue'
+      this.alertMessage = "Please wait!! Your clip is being uploaded."
+      this.isRequestProcessing = true;
+      this.showPercentage = true;
+
       let clipName = uuid()
-      if(this.uploadForm.valid){
-         console.log("File Uploaded Successfully!!");
-      }
       const filePath = `clips/${clipName}.mp4`
-      this.storage.upload(filePath,this.file);
+      const uploadTask = this.storage.upload(filePath,this.file);
+
+      const clipRef = this.storage.ref(filePath);
+
+      uploadTask.percentageChanges().pipe(map((progress) => {
+         return (progress as number) / 100;
+      })).subscribe(percent => {
+         this.percentage = percent;
+      })
+
+      uploadTask.snapshotChanges().pipe(
+         last(),
+         switchMap(() => clipRef.getDownloadURL())
+      ).subscribe({
+         next: (url) =>{
+            this.alertColor = 'green',
+            this.alertMessage = 'Upload Sucessfull !!'
+            this.showPercentage = false;
+            const clips ={
+               uid: this.user?.uid,
+               displayName: this.user?.displayName,
+               title: this.title.value,
+               fileName: `${clipName}.mp4`,
+               url
+            }
+            console.log('clipsss',clips);
+         },
+         error: (err) =>{
+            this.alertColor = 'red',
+            this.alertMessage = 'Upload Failed!, Please try again later.'
+            this.isRequestProcessing = false
+            this.showPercentage = false
+            console.log('Error:',err)
+         }
+      });
    }
 
 }
