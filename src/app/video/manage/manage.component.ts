@@ -24,7 +24,7 @@ export class ManageComponent implements OnInit {
       })
       
       this.clipsService.getUserClips().subscribe((data) =>{
-         console.log(data);
+         this.clips = data;
       });
 
    }
