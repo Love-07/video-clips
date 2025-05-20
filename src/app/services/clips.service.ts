@@ -24,7 +24,7 @@ export class ClipsService {
                return of([]);
             } else {
                return this.clipsCollection.ref.where('uid', '==', user.uid).get().then(snapshot => 
-                  snapshot.docs.map(doc => doc.data() as IClip),
+                  snapshot.docs.map(doc => ({docID: doc.id, ...doc.data() as IClip})),
                );
             }
          })

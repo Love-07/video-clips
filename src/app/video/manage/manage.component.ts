@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import IClip from 'src/app/models/clip.model';
 import { ClipsService } from 'src/app/services/clips.service';
 
 @Component({
@@ -8,7 +9,8 @@ import { ClipsService } from 'src/app/services/clips.service';
   styleUrls: ['./manage.component.css']
 })
 export class ManageComponent implements OnInit {
-   videoOrder = '1'
+   videoOrder = '1';
+   clips: IClip[] = [];
    constructor(private router: Router, private route: ActivatedRoute, private clipsService: ClipsService){
       
    }
