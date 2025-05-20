@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ClipsService } from 'src/app/services/clips.service';
 
 @Component({
   selector: 'app-manage',
@@ -8,7 +9,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 })
 export class ManageComponent implements OnInit {
    videoOrder = '1'
-   constructor(private router: Router, private route: ActivatedRoute){
+   constructor(private router: Router, private route: ActivatedRoute, private clipsService: ClipsService){
       
    }
    ngOnInit(): void {
@@ -19,6 +20,11 @@ export class ManageComponent implements OnInit {
          const sort = params.get('sort');      // ← use get()
          this.videoOrder = sort === '2' ? sort! : '1';
       })
+      
+      this.clipsService.getUserClips().subscribe((data) =>{
+         console.log(data);
+      });
+
    }
 
    sort(e: Event){
