@@ -56,4 +56,12 @@ export class ManageComponent implements OnInit {
       })
    }
 
+   deleteClip(e: Event, inputClip: IClip){
+      e.preventDefault();
+      this.clipsService.deleteClip(inputClip)
+      this.clips = this.clips.filter((clip) =>{
+         return clip.docID != inputClip.docID
+      })
+   }
+
 }
