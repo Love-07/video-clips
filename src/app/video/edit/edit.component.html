@@ -2,16 +2,22 @@
   <app-modal modalId="edit-modal">
     <p class="text-2xl font-bold">Edit Video</p>
 
+    <app-alert *ngIf="showAlert" [color]="alertColor">{{alertMessage}}</app-alert>
+
     <!-- Form -->
-    <form [formGroup]="editFormGroup">
+    <form [formGroup]="editFormGroup" (ngSubmit)="onSubmit()">
       <!-- Title -->
       <div class="mt-4">
         <app-input [control]="title" placeholder="Enter Title" label="Title" labelClass="text-xl mb-4"></app-input>
       </div>
 
       <div class="mt-4 text-right">
-        <button type="submit" 
-          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm rounded-md text-white bg-indigo-600 focus:outline-none">
+        <button [disabled]="!editFormGroup.valid || isRequestProcessing" type="submit" 
+          class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm rounded-md text-white focus:outline-none"
+          [ngClass]="{
+               'bg-indigo-600 hover:bg-indigo-700': editFormGroup.valid || !isRequestProcessing,
+               'bg-indigo-300 cursor-not-allowed': !editFormGroup.valid || isRequestProcessing
+            }">
           Update
         </button>
       </div>

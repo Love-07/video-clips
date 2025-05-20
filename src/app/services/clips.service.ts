@@ -30,4 +30,10 @@ export class ClipsService {
          })
       );
    }
+
+   updateClips(id: string, title: string){
+      this.clipsCollection.doc(id).update({
+         title
+      })
+   }
 }
