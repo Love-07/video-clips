@@ -22,3 +22,10 @@
    controller->it represents the business logic of the component 
 
    controller can be treated like a middle man between the model and the view
+
+
+# Web Worker 
+   A web worker is another script for running code on a different thread 
+   Theoritically, if a web worker have blocking code, it would not block the main thread / application
+   **Problem**: The web-worker don't have access to the document, if it needs to send data to the main thread, a message must be posted (sending large data between web worker and main thread can freeze the application)
+   **Solution**: Add a shared array buffers which are objects and scripts from different thread can read and write to the same object 
