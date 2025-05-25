@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { combineLatest, last, map, Observable, switchMap, timestamp } from 'rxjs';
+import { combineLatest, forkJoin, last, map, Observable, switchMap, timestamp } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { v4 as uuid } from 'uuid';
 import firebase from 'firebase/compat/app'
@@ -88,6 +88,8 @@ export class UploadComponent implements OnInit, OnDestroy {
 
       this.screenshotTask = this.storage.upload(screenshotPath, screenshotBlob);
 
+      const screenshotRef = this.storage.ref(screenshotPath);
+
       combineLatest(
          [this.uploadTask.percentageChanges(),
           this.screenshotTask?.percentageChanges()
@@ -104,24 +106,25 @@ export class UploadComponent implements OnInit, OnDestroy {
       })
 
 
-      this.uploadTask.snapshotChanges().pipe(
-         last(),
-         switchMap(() => clipRef.getDownloadURL())
+      forkJoin([this.uploadTask.snapshotChanges(), this.screenshotTask.snapshotChanges()]).pipe(
+         switchMap(() => forkJoin([clipRef.getDownloadURL(), screenshotRef.getDownloadURL()]))
       ).subscribe({
-         next: async (url) =>{
+         next: async (urls) =>{
+            const [clipURL, screenshotURL] = urls;
             this.alertColor = 'green',
             this.alertMessage = 'Upload Sucessfull !!'
             this.showPercentage = false;
-            const clips ={
+            const clip ={
                uid: this.user?.uid as string,
                displayName: this.user?.displayName as string,
                title: this.title.value,
                fileName: `${clipName}.mp4`,
-               url,
+               url: clipURL,
+               screenshotURL,
                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }
-            const clipDocRef = await this.clipsService.createClips(clips)
-            console.log('clipsss',clips);
+            const clipDocRef = await this.clipsService.createClips(clip)
+            console.log('clippp',clip);
             setTimeout(() => {
                this.router.navigate(['clip',clipDocRef.id]);
             }, 1000);
