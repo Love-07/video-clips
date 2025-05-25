@@ -28,8 +28,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    uploadTask?: AngularFireUploadTask;
    screenshots: string[] = [];
    selectedScreenshot = '';
-   
-   
+   screenshotTask?: AngularFireUploadTask;
 
    title = new FormControl('', {validators: [Validators.required, Validators.minLength(3)], nonNullable:true});
 
@@ -45,8 +44,6 @@ export class UploadComponent implements OnInit, OnDestroy {
 
       this.ffmpegService.init();
    }
-   
-   
 
    ngOnInit(): void {
    }
@@ -70,7 +67,7 @@ export class UploadComponent implements OnInit, OnDestroy {
       this.isFileUploaded=true;
    }
 
-   uploadFile(){
+   async uploadFile(){
       this.uploadForm.disable();
       this.showAlert = true;
       this.alertColor = 'blue'
@@ -80,6 +77,11 @@ export class UploadComponent implements OnInit, OnDestroy {
 
       let clipName = uuid()
       const filePath = `clips/${clipName}.mp4`
+
+      const screenshotBlob = await this.ffmpegService.blobFromURL(this.selectedScreenshot);
+      const screenshotPath = `screenshots/${clipName}.png`;
+
+
       this.uploadTask = this.storage.upload(filePath,this.file);
 
       const clipRef = this.storage.ref(filePath);
@@ -89,6 +91,8 @@ export class UploadComponent implements OnInit, OnDestroy {
       })).subscribe(percent => {
          this.percentage = percent;
       })
+
+      this.screenshotTask = this.storage.upload(screenshotPath, screenshotBlob);
 
       this.uploadTask.snapshotChanges().pipe(
          last(),
