@@ -8,6 +8,7 @@ import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 export class FfmpegService {
    private ffmpeg;
    isReady = false;
+   isRunnig =false;
 
   constructor() { 
    this.ffmpeg = createFFmpeg({log: true})
@@ -22,6 +23,7 @@ export class FfmpegService {
   }
 
   async getScreenshots(file: File){
+   this.isRunnig = true;
    const data = await fetchFile(file);
 
    const seconds = [1,2,3]
@@ -64,6 +66,7 @@ export class FfmpegService {
       screenshots.push(screenshotURL);
    })
 
+   this.isRunnig = false;
    return screenshots
   }
 }

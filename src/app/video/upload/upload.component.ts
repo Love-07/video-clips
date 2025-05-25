@@ -27,6 +27,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    user: firebase.User | null = null;
    uploadTask?: AngularFireUploadTask;
    screenshots: string[] = [];
+   selectedScreenshot = '';
    
    
 
@@ -51,6 +52,9 @@ export class UploadComponent implements OnInit, OnDestroy {
    }
 
    async storeFile(e:Event){ 
+      if(this.ffmpegService.isRunnig){
+         return;
+      }
       this.isDragging = false;
       this.file = (e as DragEvent).dataTransfer ? (e as DragEvent).dataTransfer?.files.item(0) ?? null : (e.target as HTMLInputElement).files?.item(0) ?? null  //this function will handle the grabbing of the file which come over the event 
 
@@ -59,6 +63,7 @@ export class UploadComponent implements OnInit, OnDestroy {
       }
 
       this.screenshots = await this.ffmpegService.getScreenshots(this.file);
+      this.selectedScreenshot = this.screenshots[0];
       
       this.title.setValue(this.file.name.replace(/\.[^/.]+$/, ''));
       console.log(this.file);
