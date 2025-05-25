@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import firebase from 'firebase/compat/app'
 import { ClipsService } from 'src/app/services/clips.service';
 import { Router } from '@angular/router';
+import { FfmpegService } from 'src/app/services/ffmpeg.service';
 
 @Component({
   selector: 'app-upload',
@@ -25,6 +26,7 @@ export class UploadComponent implements OnInit, OnDestroy {
    showPercentage = false;
    user: firebase.User | null = null;
    uploadTask?: AngularFireUploadTask;
+   screenshots: string[] = [];
    
    
 
@@ -34,11 +36,13 @@ export class UploadComponent implements OnInit, OnDestroy {
       title: this.title
    })
 
-   constructor(private storage: AngularFireStorage, private auth: AuthService, private clipsService: ClipsService, private router: Router){
+   constructor(private storage: AngularFireStorage, private auth: AuthService, private clipsService: ClipsService, private router: Router, public ffmpegService: FfmpegService){
       //as soon as the component is initialized i want to get the user detail handy with me 
       this.auth.getUser$.subscribe((user)=>{
          this.user = user
       })
+
+      this.ffmpegService.init();
    }
    
    
@@ -46,13 +50,15 @@ export class UploadComponent implements OnInit, OnDestroy {
    ngOnInit(): void {
    }
 
-   storeFile(e:Event){ 
+   async storeFile(e:Event){ 
       this.isDragging = false;
       this.file = (e as DragEvent).dataTransfer ? (e as DragEvent).dataTransfer?.files.item(0) ?? null : (e.target as HTMLInputElement).files?.item(0) ?? null  //this function will handle the grabbing of the file which come over the event 
 
       if(!this.file || this.file.type != 'video/mp4'){
          return;
       }
+
+      this.screenshots = await this.ffmpegService.getScreenshots(this.file);
       
       this.title.setValue(this.file.name.replace(/\.[^/.]+$/, ''));
       console.log(this.file);

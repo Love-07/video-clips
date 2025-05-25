@@ -26,7 +26,7 @@
               {
                "input": "node_modules/@ffmpeg/core/dist",
                "output": "node_modules/@ffmpeg/core/dist",
-               "glob": ""
+               "glob": "*"
               }
             ],
             "styles": [
@@ -81,7 +81,7 @@
           "options": {
             "headers": {
                "Cross-Origin-Opener-Policy": "same-origin",
-               "Cross-Origin-Embedder-Policy": "required-corp"
+               "Cross-Origin-Embedder-Policy": "require-corp"
             }
           }
         },
