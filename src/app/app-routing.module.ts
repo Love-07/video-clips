@@ -11,6 +11,7 @@ const routes: Routes = [
    {path: '', component: HomeComponent},
    {path: 'about', component: AboutComponent},
    {path: 'clip/:id', component: ClipsComponent, resolve: {clip: ClipsService}},
+   {path: '', loadChildren: async () => (await import('./video/video.module')).VideoModule}, //lazy loading the video module
    {path: '**', component: NotFoundComponent}
 ];
 
