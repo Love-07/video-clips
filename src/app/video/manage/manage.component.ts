@@ -66,5 +66,16 @@ export class ManageComponent implements OnInit {
          return clip.docID != inputClip.docID
       })
    }
+   async copyToClipboard(e: MouseEvent, id: string | undefined){
+      e.preventDefault();
+      if (!id) return; // Ensure id is defined
+      
+      const url = `${location.origin}/clip/${id}`;
+      await navigator.clipboard.writeText(url).then(() =>{
+         alert('Link copied to clipboard');
+      }).catch((err) =>{
+         console.error('Failed to copy: ', err);
+      })
+   }
 
 }
